@@ -6,6 +6,7 @@ import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.NoBorders        -- No Borders, why not?
 import XMonad.Util.Run                -- 
 import System.Exit                    -- Used for exiting Xmonad
+import System.IO
 
 import qualified XMonad.StackSet as W -- Used for Workspace Keybind
 import qualified Data.Map        as M -- Used for Keybind
@@ -18,10 +19,22 @@ myFileMan      = "thunar"
 myMouseFocus  :: Bool
 myMouseFocus   = False
 
+myRestart :: String
+myRestart = "xmonad --recompile && for pid in `pgrep dzen2`; do kill -9 $pid; done && xmonad --restart"
+
 -- Style 
-myNormalBorder = "#1a1a1a"
-myFocusBorder  = "#c28d1d"
-myBorderWidth  = 2 
+myBgColor       = "#1a1a1a"
+myFgColor       = "#ffffff"
+myHiddenColor   = "#707070"
+myAccentColorA  = "#c28d1d"
+myAccentColorB  = "#cb1456"
+myDzenFonts     = "-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*"
+
+--Border
+myNormalBorderColor = myBgColor
+myFocusBorderColor  = myAccentColorA
+myBorderWidth       = 2 
+myBarHeight         = "16"
 
 -- Layout
 myWorkspaces = ["eins","zwei","drei","vier","funf","sechs","sieben","acht","neun"]
@@ -50,7 +63,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf ) -- Reset Layout
     , ((modm .|. shiftMask, xK_t     ), withFocused $ windows . W.sink     ) -- Force window to tile pane
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess)          ) -- Quit XMonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile && xmonad --restart") -- Recompile then refresh XMonad
+    , ((modm              , xK_q     ), spawn myRestart                    ) -- Recompile then refresh XMonad
     -- Pane Switching
     , ((modm,               xK_Tab   ), windows W.focusDown    ) -- Focus to next pane
     , ((modm,               xK_Right ), windows W.focusDown    )
@@ -113,11 +126,11 @@ myManageHook = composeAll
 
 -- LogHook
 myLogHook h = dynamicLogWithPP $ defaultPP
-    { ppCurrent         = dzenColor "#c28d1d" "" . pad
-    , ppHidden          = dzenColor "#ffffff" "" . pad
-    , ppHiddenNoWindows = dzenColor "#707070" "" . pad
-    , ppLayout          = dzenColor "#cb1456" "" . pad
-    , ppUrgent          = dzenColor "#cb1456" "" . pad . dzenStrip
+    { ppCurrent         = dzenColor myAccentColorA "" . pad
+    , ppHidden          = dzenColor myFgColor "" . pad
+    , ppHiddenNoWindows = dzenColor myHiddenColor "" . pad
+    , ppLayout          = dzenColor myAccentColorB "" . pad
+    , ppUrgent          = dzenColor myAccentColorB "" . pad . dzenStrip
     , ppTitle           = const "" 
     , ppWsSep           = ""
     , ppSep             = ":"
@@ -126,16 +139,17 @@ myLogHook h = dynamicLogWithPP $ defaultPP
     }
 
 
-myDzenFGColor = "#ff0000"
-myDzenBGColor = "#1a1a1a"
-myDzenHeight  = "18"
-myDzenFonts   = "-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*"
+--Conky and Statusbar    
+myPipeA = "dzen2 -p -ta l -h '" ++ myBarHeight ++ "' -w '500' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myDzenFonts ++"'"
+myPipeB = "conky -c ~/.xmonad/dzConky1 | dzen2 -p -ta r -h '" ++ myBarHeight ++ "' -w '866' -x '500' -e 'onstart=lower' -bg '" ++ myBgColor ++"' -fg '" ++ myFgColor ++"' -fn '" ++ myDzenFonts ++ "'" 
+myPipeC = "conky -c ~/.xmonad/dzConky2 | dzen2 -p -ta l -h '" ++ myBarHeight ++ "' -w '700' -x '0' -y '-" ++ myBarHeight ++ "' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myDzenFonts ++ "'"
+myPipeD = "conky -c ~/.xmonad/dzConky3 | dzen2 -p -ta r -h '" ++ myBarHeight ++ "' -w '700' -x '666' -y '-" ++ myBarHeight ++"' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myDzenFonts ++"'"
 
 main = do
-   d <- spawnPipe "dzen2 -p -ta l -h '16' -w '500' -e 'onstart=lower' -bg '#1a1a1a' -fg '#ffffff' -fn '-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*'"
-   spawn $ "conky -c /home/lily/.xmonad/dzConky1 | dzen2 -p -ta r -h '16' -w '866' -x '500' -e 'onstart=lower' -bg '#1a1a1a' -fg '#c28d1d' -fn '-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*'"
--- spawn $ "conky -c /home/lily/.xmonad/dzConky2 | dzen2 -p -ta l -h '16' -w '700' -x '0' -y '-16' -e 'onstart=lower' -bg '#1a1a1a' -fg '#c28d1d' -fn '-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*'"
--- spawn $ "conky -c /home/lily/.xmonad/dzConky3 | dzen2 -p -ta r -h '16' -w '700' -x '666' -y '-16' -e 'onstart=lower' -bg '#1a1a1a' -fg '#c28d1d' -fn '-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*'"
+   d <- spawnPipe myPipeA
+   spawn $ myPipeB 
+   spawn $ myPipeC
+   spawn $ myPipeD
    xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig 
       { terminal     = myTerm
       , modMask      = mod4Mask
@@ -144,8 +158,8 @@ main = do
       , manageHook   = myManageHook <+> manageDocks
       -- Style
       , borderWidth        = myBorderWidth
-      , normalBorderColor  = myNormalBorder
-      , focusedBorderColor = myFocusBorder
+      , normalBorderColor  = myNormalBorderColor
+      , focusedBorderColor = myFocusBorderColor
       , logHook            = myLogHook d
       -- Behavior
       , keys               = myKeys
