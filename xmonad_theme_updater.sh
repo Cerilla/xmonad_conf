@@ -8,7 +8,7 @@ myBgColor="#000000"
 myFgColor="#ffffff"
 myHiddenColor="#404040"
 myAccentColorA="#cc3300"
-myAccentColorB="#3300cc"
+myAccentColorB="#ffbb00"
 
 sed -i "s/^\(myBgColor *= \).*/\1\"${myBgColor}\"/" ${config_folder}xmonad.hs
 sed -i "s/^\(myFgColor *= \).*/\1\"${myFgColor}\"/" ${config_folder}xmonad.hs 
@@ -84,7 +84,7 @@ use_xft yes
 
 
 TEXT
-^fg(\\${myAccentColorA})^i(/home/lily/.xmonad/icon/net_up_03.xbm) ^fg(\\${myFgColor})\${upspeed enp7s0f5}\
+^fg(\\${myAccentColorA})^i(/home/lily/.xmonad/icon/net_up_03.xbm) ^fg(\\${myFgColor})\${upspeed enp7s0f5} \
 ^fg(\\${myAccentColorA})^i(/home/lily/.xmonad/icon/net_down_03.xbm) ^fg(\\${myFgColor})\${downspeed enp7s0f5} \
 
 EOF
