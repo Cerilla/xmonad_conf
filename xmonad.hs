@@ -23,19 +23,19 @@ myRestart :: String
 myRestart = "xmonad --recompile && for pid in `pgrep dzen2`; do kill -9 $pid; done && xmonad --restart"
 
 -- Style 
-myBgColor       = "#1a1a1a"
+myBgColor       = "#000000"
 myFgColor       = "#ffffff"
-myHiddenColor   = "#707070"
-myAccentColorA  = "#c28d1d"
-myAccentColorB  = "#cb1456"
-myDzenFonts     = "-*-terminus-*-r-normal-*-11-120-*-*-*-*-iso8859-*"
+myHiddenColor   = "#404040"
+myAccentColorA  = "#cc3300"
+myAccentColorB  = "#ffbb00"
+myFonts         = "Droid Sans-9"
+--myFonts     = "-*-profont-*-r-normal-*-11-120-*-*-*-*-iso8859-*"
 
 --Border
 myNormalBorderColor = myBgColor
 myFocusBorderColor  = myAccentColorA
 myBorderWidth       = 2 
-myBarHeight         = "16"
-
+myBarHeight         = 20
 -- Layout
 myWorkspaces = ["eins","zwei","drei","vier","funf","sechs","sieben","acht","neun"]
 
@@ -53,7 +53,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm,               xK_Return), spawn $ XMonad.terminal conf)
     , ((modm .|. shiftMask, xK_Return), spawn "thunar"                     )              
     , ((modm .|. shiftMask, xK_l     ), spawn "xautolock -locknow"         ) 
-    , ((modm,               xK_p     ), spawn "/home/lily/.xmonad/script/mydmenu" )
+    , ((modm,               xK_p     ), spawn "/home/lily/.xmonad/script/appsmenu" )
+    , ((modm .|. shiftMask, xK_p     ), spawn "/home/lily/.xmonad/script/musicmenu" )
     , ((modm .|. shiftMask, xK_c     ), kill                               )
     , ((   0,               xK_Print ), spawn "scrot"                      )
     -- XMonad Behaviour
@@ -139,11 +140,15 @@ myLogHook h = dynamicLogWithPP $ defaultPP
     }
 
 
+
+
 --Conky and Statusbar    
-myPipeA = "dzen2 -p -ta l -h '" ++ myBarHeight ++ "' -w '500' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myDzenFonts ++"'"
-myPipeB = "conky -c ~/.xmonad/dzConky1 | dzen2 -p -ta r -h '" ++ myBarHeight ++ "' -w '866' -x '500' -e 'onstart=lower' -bg '" ++ myBgColor ++"' -fg '" ++ myFgColor ++"' -fn '" ++ myDzenFonts ++ "'" 
-myPipeC = "conky -c ~/.xmonad/dzConky2 | dzen2 -p -ta l -h '" ++ myBarHeight ++ "' -w '700' -x '0' -y '-" ++ myBarHeight ++ "' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myDzenFonts ++ "'"
-myPipeD = "conky -c ~/.xmonad/dzConky3 | dzen2 -p -ta r -h '" ++ myBarHeight ++ "' -w '700' -x '666' -y '-" ++ myBarHeight ++"' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myDzenFonts ++"'"
+myHeight  = show myBarHeight
+
+myPipeA = "dzen2 -p -ta l -h '" ++ myHeight ++ "' -w '500' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myFonts ++"'"
+myPipeB = "conky -c ~/.xmonad/dzConky1 | dzen2 -p -ta r -h '" ++ myHeight ++ "' -w '866' -x '500' -e 'onstart=lower' -bg '" ++ myBgColor ++"' -fg '" ++ myFgColor ++"' -fn '" ++ myFonts ++ "'" 
+myPipeC = "conky -c ~/.xmonad/dzConky2 | dzen2 -p -ta l -h '" ++ myHeight ++ "' -w '700' -x '0' -y '-" ++ myHeight ++ "' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myFonts ++ "'"
+myPipeD = "conky -c ~/.xmonad/dzConky3 | dzen2 -p -ta r -h '" ++ myHeight ++ "' -w '700' -x '666' -y '-" ++ myHeight ++"' -e 'onstart=lower' -bg '" ++ myBgColor ++ "' -fg '" ++ myFgColor ++ "' -fn '" ++ myFonts ++"'"
 
 main = do
    d <- spawnPipe myPipeA
