@@ -2,13 +2,22 @@
 
 # Color Definition
 
-myBgColor="#1a1a1a"
-myFgColor="#ffffff"
-myHiddenColor="#707070"
-myAccentColorA="#00ff00"
-myAccentColorB="#ff00ff"
+config_folder="/home/lily/.xmonad/"
 
-cat > dzConky1 << EOF
+myBgColor="#000000"
+myFgColor="#ffffff"
+myHiddenColor="#404040"
+myAccentColorA="#cc3300"
+myAccentColorB="#3300cc"
+
+sed -i "s/^\(myBgColor *= \).*/\1\"${myBgColor}\"/" ${config_folder}xmonad.hs
+sed -i "s/^\(myFgColor *= \).*/\1\"${myFgColor}\"/" ${config_folder}xmonad.hs 
+sed -i "s/^\(myHiddenColor *= \).*/\1\"${myHiddenColor}\"/" ${config_folder}xmonad.hs
+sed -i "s/^\(myAccentColorA *= \).*/\1\"${myAccentColorA}\"/" ${config_folder}xmonad.hs
+sed -i "s/^\(myAccentColorB *= \).*/\1\"${myAccentColorB}\"/" ${config_folder}xmonad.hs 
+
+
+cat > ${config_folder}dzConky1 << EOF
 
 out_to_x no
 out_to_console yes
@@ -26,9 +35,8 @@ TEXT
 
 EOF
 
-cat > script/volbar << EOF
-#!/bin/zsh
-# vim:ft=zsh ts=4
+cat > ${config_folder}script/volbar << EOF
+#!/bin/bash
 
 myvol() {
 
@@ -36,20 +44,20 @@ myvol() {
     ismute=`amixer |grep -A 6 \'Master\'|awk {'print \$6'} |grep -m 1 "[on|off]" | sed -e 's/[][]//g'`
 
     if [[ \$ismute == "off" ]]; then
-print -n "^fg(\\${myAccentColorA})^i(/home/lily/.xmonad/icon/spkr_02.xbm) \$(echo "0" | gdbar -fg '\\${myAccentColorB}' -bg '\\${myHiddenColor}' -h 6 -w 50)"
+echo -n "^fg(${myAccentColorA})^i(/home/lily/.xmonad/icon/spkr_02.xbm) \$(echo "0" | gdbar -fg '${myAccentColorB}' -bg '${myHiddenColor}' -h 6 -w 50)"
     else
-print -n "^fg(\\${myAccentColorA})^i(/home/lily/.xmonad/icon/spkr_01.xbm) \$(echo \$percentage | gdbar -fg '\\${myAccentColorB}' -bg '\\${myHiddenColor}' -h 6 -w 50)"
+echo -n "^fg(${myAccentColorA})^i(/home/lily/.xmonad/icon/spkr_01.xbm) \$(echo \$percentage | gdbar -fg '${myAccentColorB}' -bg '${myHiddenColor}' -h 6 -w 50)"
     fi
 }
 
 while true; do
-print "\$(myvol)"
+echo "\$(myvol)"
     sleep 1
 done
 
 EOF
 
-cat > script/mydmenu << EOF
+cat > ${config_folder}script/mydmenu << EOF
 #! /bin/bash
 
 normal_bg_color="${myBgColor}"
@@ -63,7 +71,7 @@ dmenu_run -i -l 0 \
 
 EOF
 
-cat > dzConky3 << EOF
+cat > ${config_folder}dzConky3 << EOF
 out_to_x no
 out_to_console yes
 background no
@@ -81,8 +89,8 @@ TEXT
 
 EOF
 
-cat > script/dropbox_stat << EOF
-#!/bin/zsh
+cat > ${config_folder}script/dropbox_stat << EOF
+#!/bin/bash
 
 mypacman() {
     echo `/home/lily/.xmonad/script/pac_check`    
@@ -92,7 +100,7 @@ mydropbox() {
 }
 
 while true; do
-    print " ^fg(\\${myAccentColorA})^i(/home/lily/.xmonad/icon/arch.xbm) ^fg(\\${myFGColor})\$(mypacman) ^fg(\\${myAccentColorA})\ ^i(/home/lily/.xmonad/icon/cat.xbm) ^fg(\\${myFGColor})\$(mydropbox)"
+    echo " ^fg(${myAccentColorA})^i(/home/lily/.xmonad/icon/arch.xbm) ^fg(${myFGColor})\$(mypacman) ^fg(${myAccentColorA}) ^i(/home/lily/.xmonad/icon/cat.xbm) ^fg(${myFGColor})\$(mydropbox)"
     sleep 1
 done
 EOF
