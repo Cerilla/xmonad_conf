@@ -59,8 +59,8 @@ cat > ${config_folder}script/volbar << EOF
 
 myvol() {
 
-    percentage=`amixer |grep -A 6 \'PCM\' |awk {'print \$5'} |grep -m 1 % |sed -e 's/[][%]//g'`
-    ismute=`amixer |grep -A 6 \'Master\'|awk {'print \$6'} |grep -m 1 "[on|off]" | sed -e 's/[][]//g'`
+    percentage=\`amixer |grep -A 6 \'PCM\' |awk {'print \$5'} |grep -m 1 % |sed -e 's/[][%]//g'\`
+    ismute=\`amixer |grep -A 6 \'Master\'|awk {'print \$6'} |grep -m 1 "[on|off]" | sed -e 's/[][]//g'\`
 
     if [[ \$ismute == "off" ]]; then
         echo -n "^fg(${myAccentColorA})^i(${config_folder}icon/spkr_02.xbm) \$(echo "0" | gdbar -fg '${myAccentColorB}' -bg '${myHiddenColor}' -h 6 -w 50)"
@@ -96,10 +96,10 @@ cat > ${config_folder}script/dropbox_stat << EOF
 #!/bin/bash
 
 mypacman() {
-    echo `${config_folder}script/pac_check`    
+    echo \`${config_folder}script/pac_check\`
 }
 mydropbox() {
-    echo `dropbox status | head -n 1`
+    echo \`dropbox status | head -n 1\`
 }
 
 while true; do

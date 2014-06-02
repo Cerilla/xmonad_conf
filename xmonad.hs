@@ -7,6 +7,7 @@ import XMonad.Layout.NoBorders        -- No Borders, why not?
 import XMonad.Util.Run                -- 
 import System.Exit                    -- Used for exiting Xmonad
 import System.IO
+import Data.List
 
 import qualified XMonad.StackSet as W -- Used for Workspace Keybind
 import qualified Data.Map        as M -- Used for Keybind
@@ -28,8 +29,7 @@ myFgColor       = "#ffffff"
 myHiddenColor   = "#404040"
 myAccentColorA  = "#cc3300"
 myAccentColorB  = "#ffbb00"
-myFonts         = "Droid Sans-9"
---myFonts     = "-*-profont-*-r-normal-*-11-120-*-*-*-*-iso8859-*"
+myFonts     = "ProFont-9"
 
 --Border
 myNormalBorderColor = myBgColor
@@ -37,7 +37,11 @@ myFocusBorderColor  = myAccentColorA
 myBorderWidth       = 2 
 myBarHeight         = 20
 -- Layout
-myWorkspaces = ["eins","zwei","drei","vier","funf","sechs","sieben","acht","neun"]
+myWorkspaces = clickable . (map dzenEscape) $ ["eins","zwei","drei","vier","funf","sechs","sieben","acht","neun"]
+
+      where clickable l     = [ "^ca(1,xdotool key super+" ++ show (n) ++ ")" ++ ws ++ "^ca()" |
+                              (i,ws) <- zip [1..] l,
+                              let n = i ]
 
 myLayout = tiled ||| Mirror tiled ||| maximized
    where
